@@ -1,0 +1,17 @@
+{% extends 'core/base.html' %}
+{% block title %}Departments{% endblock %}
+{% block content %}
+<div class="d-flex justify-content-between mb-3">
+  <h2>Departments</h2>
+  <a href="{% url 'department_create' %}" class="btn btn-primary">+ New Department</a>
+</div>
+{% for dept in departments %}
+  <div class="card mb-3 p-3">
+    <h5>{{ dept.name }}</h5>
+    <p class="text-muted">{{ dept.description }}</p>
+    <small>Projects: {{ dept.project_set.count }}</small>
+  </div>
+{% empty %}
+  <p class="text-muted">No departments yet.</p>
+{% endfor %}
+{% endblock %}

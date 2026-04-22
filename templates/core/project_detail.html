@@ -1,0 +1,67 @@
+{% extends 'core/base.html' %}
+{% block title %}{{ project.title }}{% endblock %}
+{% block content %}
+<div class="d-flex justify-content-between mb-3">
+  <div>
+    <h2>{{ project.title }}</h2>
+    <span class="badge badge-{{ project.status }} text-white">{{ project.get_status_display }}</span>
+    {% if project.department %}<span class="badge bg-secondary">{{ project.department }}</span>{% endif %}
+  </div>
+  <div>
+    <a href="{% url 'project_edit' project.pk %}" class="btn btn-outline-secondary btn-sm">Edit</a>
+    <a href="{% url 'project_delete' project.pk %}" class="btn btn-outline-danger btn-sm">Delete</a>
+  </div>
+</div>
+<p>{{ project.description }}</p>
+<div class="row mb-4">
+  <div class="col-md-3"><strong>Budget:</strong> €{{ project.budget }}</div>
+  <div class="col-md-3"><strong>Spent:</strong> €{{ total_spent }}</div>
+  <div class="col-md-3"><strong>Start:</strong> {{ project.start_date }}</div>
+  <div class="col-md-3"><strong>End:</strong> {{ project.end_date|default:"TBD" }}</div>
+</div>
+
+<div class="d-flex justify-content-between align-items-center mb-2">
+  <h4>Tasks ({{ tasks.count }})</h4>
+  <a href="{% url 'task_create' project.pk %}" class="btn btn-sm btn-success">+ Add Task</a>
+</div>
+{% if tasks %}
+  <table class="table table-hover card p-0">
+    <thead class="table-dark"><tr><th>Title</th><th>Priority</th><th>Status</th><th>Assigned To</th><th>Due</th><th></th></tr></thead>
+    <tbody>
+    {% for task in tasks %}
+      <tr>
+        <td>{{ task.title }}</td>
+        <td><span class="badge bg-{% if task.priority == 'high' %}danger{% elif task.priority == 'medium' %}warning text-dark{% else %}secondary{% endif %}">{{ task.get_priority_display }}</span></td>
+        <td>{{ task.get_status_display }}</td>
+        <td>{{ task.assigned_to|default:"Unassigned" }}</td>
+        <td>{{ task.due_date|default:"—" }}</td>
+        <td>
+          <a href="{% url 'task_edit' task.pk %}" class="btn btn-xs btn-outline-secondary btn-sm">Edit</a>
+          <a href="{% url 'task_delete' task.pk %}" class="btn btn-xs btn-outline-danger btn-sm">Del</a>
+        </td>
+      </tr>
+    {% endfor %}
+    </tbody>
+  </table>
+{% else %}
+  <p class="text-muted">No tasks yet.</p>
+{% endif %}
+
+<div class="d-flex justify-content-between align-items-center mt-4 mb-2">
+  <h4>Budget Entries</h4>
+  <a href="{% url 'budget_add' project.pk %}" class="btn btn-sm btn-outline-primary">+ Add Entry</a>
+</div>
+{% if budgets %}
+  <table class="table table-sm card">
+    <thead><tr><th>Category</th><th>Description</th><th>Amount</th><th>Date</th></tr></thead>
+    <tbody>
+    {% for b in budgets %}
+      <tr><td>{{ b.get_category_display }}</td><td>{{ b.description }}</td><td>€{{ b.amount }}</td><td>{{ b.date }}</td></tr>
+    {% endfor %}
+    </tbody>
+  </table>
+{% else %}
+  <p class="text-muted">No budget entries yet.</p>
+{% endif %}
+<a href="{% url 'project_list' %}" class="btn btn-outline-secondary mt-3">← Back to Projects</a>
+{% endblock %}

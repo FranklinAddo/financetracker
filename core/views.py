@@ -47,6 +47,9 @@ def dashboard(request):
         'task_count':    Task.objects.count(),
         'my_tasks':      Task.objects.filter(assigned_to=request.user)[:5],
         'recent_projects': Project.objects.order_by('-created_at')[:5],
+        'departments': Department.objects.all(),
+        'department_count': Department.objects.count(),
+        'budgets': Budget.objects.order_by('-date')[:5],  # optional
     }
     return render(request, 'core/dashboard.html', context)
 

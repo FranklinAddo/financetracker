@@ -1,11 +1,3 @@
-"""
-Beginner-friendly tests for FinanceTracker
-Includes:
-- Unit Tests (models)
-- Integration Tests (views)
-- Use Case Test (workflow)
-"""
-
 from django.test import TestCase, Client
 from django.urls import reverse
 from django.contrib.auth.models import User
@@ -13,10 +5,7 @@ from .models import Project, Task
 import datetime
 
 
-# ─────────────────────────────
 # UNIT TESTS (MODELS)
-# ─────────────────────────────
-
 class ProjectModelTest(TestCase):
 
     def test_project_creation(self):
@@ -50,10 +39,7 @@ class TaskModelTest(TestCase):
         self.assertEqual(task.title, 'My Task')
 
 
-# ─────────────────────────────
 # INTEGRATION TESTS (VIEWS)
-# ─────────────────────────────
-
 class AuthIntegrationTest(TestCase):
 
     def setUp(self):
@@ -98,10 +84,7 @@ class ProjectIntegrationTest(TestCase):
         self.assertTrue(Project.objects.filter(title='New Project').exists())
 
 
-# ─────────────────────────────
 # USE CASE TEST (WORKFLOW)
-# ─────────────────────────────
-
 class SimpleWorkflowTest(TestCase):
 
     def setUp(self):
@@ -110,7 +93,7 @@ class SimpleWorkflowTest(TestCase):
         self.client.login(username='manager', password='pass')
 
     def test_user_creates_project_and_task(self):
-        # Step 1: Create project
+
         self.client.post(reverse('project_create'), {
             'title': 'Workflow Project',
             'description': 'Workflow test',
@@ -122,12 +105,10 @@ class SimpleWorkflowTest(TestCase):
 
         project = Project.objects.get(title='Workflow Project')
 
-        # Step 2: Create task
         self.client.post(reverse('task_create', args=[project.id]), {
             'title': 'Task 1',
             'priority': 'medium',
             'status': 'todo'
         })
 
-        # Step 3: Check result
         self.assertEqual(project.tasks.count(), 1)
